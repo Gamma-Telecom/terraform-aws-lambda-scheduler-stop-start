@@ -126,6 +126,26 @@ data "aws_iam_policy_document" "rds_scheduler" {
   }
 }
 
+resource "aws_iam_role_policy" "ecs_scheduler" {
+  count  = var.custom_iam_role_arn == null ? 1 : 0
+  name   = "${var.name}-ecs-custom-policy-scheduler"
+  role   = aws_iam_role.this[0].id
+  policy = data.aws_iam_policy_document.ecs_scheduler.json
+}
+
+data "aws_iam_policy_document" "ecs_scheduler" {
+  statement {
+    actions = [
+      "ecs:UpdateService",
+      "ecs:DescribeService",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
 resource "aws_iam_role_policy" "eks_scheduler" {
   count  = var.custom_iam_role_arn == null ? 1 : 0
   name   = "${var.name}-eks-custom-policy-scheduler"
@@ -265,6 +285,7 @@ resource "aws_lambda_function" "this" {
       TAG_KEY                   = local.scheduler_tag["key"]
       TAG_VALUE                 = local.scheduler_tag["value"]
       EC2_SCHEDULE              = tostring(var.ec2_schedule)
+      ECS_SCHEDULE              = tostring(var.ecs_schedule)
       EKS_SCHEDULE              = tostring(var.eks_schedule)
       EKS_CONFIG_RESUME         = join(",", var.scaled_up_eks_nodes)
       EKS_CONFIG_PAUSED         = join(",", var.scaled_down_eks_nodes)
