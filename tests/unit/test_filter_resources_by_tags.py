@@ -4,10 +4,7 @@
 
 import boto3
 
-from moto import (
-    mock_ec2,
-    mock_resourcegroupstaggingapi,
-)
+from moto import mock_aws
 
 from package.scheduler.filter_resources_by_tags import FilterByTags
 from package.scheduler.instance_handler import InstanceScheduler
@@ -34,8 +31,7 @@ import pytest
         ),
     ],
 )
-@mock_ec2
-@mock_resourcegroupstaggingapi
+@mock_aws
 def test_filter_instances(aws_region, instance_tag, scheduler_tag, result_count):
     """Filter instances class method."""
     tag_key = instance_tag[0]["Key"]

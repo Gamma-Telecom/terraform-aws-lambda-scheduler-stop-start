@@ -4,7 +4,7 @@
 
 import boto3
 
-from moto import mock_autoscaling, mock_cloudwatch, mock_ec2
+from moto import mock_aws
 
 from package.scheduler.autoscaling_handler import AutoscalingScheduler
 from package.scheduler.cloudwatch_handler import CloudWatchAlarmScheduler
@@ -22,7 +22,7 @@ import pytest
         ("eu-west-2", [{"Key": "badtagkey", "Values": ["badtagvalue"]}], 0),
     ],
 )
-@mock_autoscaling
+@mock_aws
 def test_list_autoscaling_group(aws_region, aws_tags, result_count):
     """Verify list autoscaling group function."""
     launch_asg(aws_region, "tostop", "true")
@@ -41,7 +41,7 @@ def test_list_autoscaling_group(aws_region, aws_tags, result_count):
         ("eu-west-2", [], 0),
     ],
 )
-@mock_autoscaling
+@mock_aws
 def test_list_autoscaling_instance(aws_region, asg_name, result_count):
     """Verify list autoscaling instance function"""
     launch_asg(aws_region, "tostop", "true")
@@ -70,9 +70,7 @@ def test_list_autoscaling_instance(aws_region, asg_name, result_count):
         ),
     ],
 )
-@mock_ec2
-@mock_autoscaling
-@mock_cloudwatch
+@mock_aws
 def test_asg_instance_stop(aws_region, aws_tags, result_count):
     """Verify autoscaling instances stop function."""
     client = boto3.client("ec2", region_name=aws_region)
