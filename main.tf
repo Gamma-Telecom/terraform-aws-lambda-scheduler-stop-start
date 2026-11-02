@@ -256,6 +256,13 @@ resource "aws_lambda_function" "this" {
   timeout       = "600"
   kms_key_arn   = var.kms_key_arn == null ? "" : var.kms_key_arn
 
+  # Hash the source files rather than the zip, whose bytes can vary between
+  # machines (file permissions, __pycache__) and cause perpetual diffs.
+  source_code_hash = base64sha256(join("", [
+    for f in sort(fileset("${path.module}/package", "**/*.py")) :
+    filesha256("${path.module}/package/${f}")
+  ]))
+
   environment {
     variables = {
       AWS_REGIONS               = var.aws_regions == null ? data.aws_region.current.region : join(", ", var.aws_regions)
