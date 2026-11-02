@@ -4,12 +4,7 @@
 
 import boto3
 
-from moto import (
-    mock_autoscaling,
-    mock_cloudwatch,
-    mock_ec2,
-    mock_resourcegroupstaggingapi,
-)
+from moto import mock_aws
 
 from package.scheduler.cloudwatch_handler import CloudWatchAlarmScheduler
 from package.scheduler.instance_handler import InstanceScheduler
@@ -39,10 +34,7 @@ import pytest
         ),
     ],
 )
-@mock_ec2
-@mock_cloudwatch
-@mock_autoscaling
-@mock_resourcegroupstaggingapi
+@mock_aws
 def test_start_ec2_instance(aws_region, aws_tags, result_count):
     """Verify start ec2 instance function."""
     client = boto3.client("ec2", region_name=aws_region)
@@ -77,10 +69,7 @@ def test_start_ec2_instance(aws_region, aws_tags, result_count):
         ),
     ],
 )
-@mock_ec2
-@mock_cloudwatch
-@mock_autoscaling
-@mock_resourcegroupstaggingapi
+@mock_aws
 def test_stop_ec2_instance(aws_region, aws_tags, result_count):
     """Verify stop ec2 instance function."""
     client = boto3.client("ec2", region_name=aws_region)
@@ -110,10 +99,7 @@ def test_stop_ec2_instance(aws_region, aws_tags, result_count):
         ),
     ],
 )
-@mock_ec2
-@mock_cloudwatch
-@mock_autoscaling
-@mock_resourcegroupstaggingapi
+@mock_aws
 def test_do_not_stop_asg_instance(aws_region, aws_tags, result_count):
     client = boto3.client("ec2", region_name=aws_region)
     launch_asg(aws_region, "tostop", "true")
@@ -142,10 +128,7 @@ def test_do_not_stop_asg_instance(aws_region, aws_tags, result_count):
         ),
     ],
 )
-@mock_ec2
-@mock_cloudwatch
-@mock_autoscaling
-@mock_resourcegroupstaggingapi
+@mock_aws
 def test_do_not_start_asg_instance(aws_region, aws_tags, result_count):
     client = boto3.client("ec2", region_name=aws_region)
     launch_asg(aws_region, "tostop", "true")

@@ -30,36 +30,34 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - toxenv: py35
-            python-version: 3.5
-          - toxenv: py36
-            python-version: 3.6
-          - toxenv: py37
-            python-version: 3.7
-          - toxenv: py38
-            python-version: 3.8
+          - toxenv: py312
+            python-version: "3.12"
+          - toxenv: py313
+            python-version: "3.13"
+          - toxenv: py314
+            python-version: "3.14"
           - toxenv: flake8
-            python-version: 3.7
+            python-version: "3.14"
           - toxenv: pylint
-            python-version: 3.7
+            python-version: "3.14"
           - toxenv: black
-            python-version: 3.7
+            python-version: "3.14"
           - toxenv: mypy
-            python-version: 3.7
-          - toxenv: pytest
-            python-version: 3.7
+            python-version: "3.14"
+          - toxenv: bandit
+            python-version: "3.14"
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python version
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.config.python-version }}
 
       - name: Install dependencies
-        run: python -m pip install tox==3.20.0
+        run: python -m pip install "tox>=4"
 
       - name: Python test
         run: tox
