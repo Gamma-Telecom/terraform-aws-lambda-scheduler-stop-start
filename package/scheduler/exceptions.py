@@ -3,6 +3,7 @@
 """Exception function for all aws scheduler."""
 
 import logging
+from typing import List
 
 
 def ec2_exception(resource_name: str, resource_id: str, exception) -> None:
@@ -85,6 +86,7 @@ def rds_exception(resource_name: str, resource_id: str, exception) -> None:
             exception,
         )
 
+
 def eks_exception(resource_name: str, resource_id: str, exception) -> None:
     """Exception raised during execution of eks scheduler.
 
@@ -95,13 +97,13 @@ def eks_exception(resource_name: str, resource_id: str, exception) -> None:
     :param str exception:
         Human readable string describing the exception
     """
-    info_codes = []
+    info_codes: List[str] = []
     warning_codes = [
         "InvalidParameterException",
         "ClientException",
         "ServerException",
         "ServiceUnavailableException",
-        "ResourceNotFoundException"
+        "ResourceNotFoundException",
     ]
 
     if exception.response["Error"]["Code"] in info_codes:

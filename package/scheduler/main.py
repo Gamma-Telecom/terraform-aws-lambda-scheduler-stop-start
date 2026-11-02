@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """This script stop and start aws resources."""
+
 import os
 
 from scheduler.autoscaling_handler import AutoscalingScheduler
 from scheduler.cloudwatch_handler import CloudWatchAlarmScheduler
+from scheduler.eks_handler import EksScheduler
 from scheduler.instance_handler import InstanceScheduler
 from scheduler.rds_handler import RdsScheduler
-from scheduler.eks_handler import EksScheduler
 
 
 def strtobool(value: str) -> bool:
@@ -40,7 +41,6 @@ def lambda_handler(event, context):
     schedule_action = os.getenv("SCHEDULE_ACTION")
     aws_regions = os.getenv("AWS_REGIONS").replace(" ", "").split(",")
     format_tags = [{"Key": os.getenv("TAG_KEY"), "Values": [os.getenv("TAG_VALUE")]}]
-
 
     _strategy = {}
     _strategy[AutoscalingScheduler] = os.getenv("AUTOSCALING_SCHEDULE")
